@@ -202,31 +202,13 @@ stack init
 
 src/ShiftSlice.hs を作成．
 入出力はあとで考えることにして，文字列から文字列への変換を考える．
-
-
-1. 入力文字列を順次シフトした文字列リストへ変換
-2. すべてのシフト文字列に文字列の先頭からn文字とりだす関数(take n)を適用
-3. 文字列リストの先頭から，長さが指定した数nになっている間，文字列をとりだす
-4. それぞれの文字列の末尾に改行文字を追加して各文字列を連結する
-
-これをそのままコードにしてみよう．
+とりあえず雛形をいれておく．
 
 ```haskell
+module ShiftSlice where
+
 shiftSlice :: Int -> String -> String
-shiftSlice n = unlines . takeWhile ((n ==) . length) . map (take n) . tails
-```
-
-確認してみよう．
-
-```
-λ> putStr $ shiftSlice 3 "abcdefgh"
-abc
-bcd
-cde
-def
-efg
-fgh
-```
-
+shiftSlice n = const "Not yet implemented."
+````
 
 未完(続きは後ほど)
