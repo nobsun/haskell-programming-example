@@ -12,7 +12,15 @@ extra-source-files:  README.md
 cabal-version:       >=1.10
 
 library
+  hs-source-dirs:      src
   exposed-modules:     ShiftSlice
   build-depends:       base >=4.8 && <4.9
-  hs-source-dirs:      src
+  default-language:    Haskell2010
+
+executable shift-slice
+  hs-source-dirs:      app
+  main-is:             shift-slice.hs
+  ghc-options:         -rtsopts
+  build-depends:       base
+                     , haskell-programming-example
   default-language:    Haskell2010

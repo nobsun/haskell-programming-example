@@ -1,7 +1,5 @@
-ここにあるのは，「Haskellプログラミングの例」です．
-筆者自身がプログラミング環境をおさらいした様子を示したものです．
+ここにあるのは，「Haskellプログラミングの例」です．筆者自身がプログラミング環境の使い方をおさらいした様子を示したものです．もっと上手い使い方があるよ．こうした方がいいよ．というのがあれば是非教えてください．
 
-もっと上手い使い方があるよ．こうした方がいいよ．というのがあれば是非教えてください．
 この記事はまだ未完です．Advent Calendar期間中にすこしずつ書きたします．
 
 ## プログラミング環境そのものの準備
@@ -198,7 +196,7 @@ stack init
 
 というテキストフィルタを書くというもの
 
-### ShiftSlice モジュール
+### ShiftSlice モジュール雛形
 
 src/ShiftSlice.hs を作成．
 入出力はあとで考えることにして，文字列から文字列への変換を考える．
@@ -208,7 +206,53 @@ src/ShiftSlice.hs を作成．
 module ShiftSlice where
 
 shiftSlice :: Int -> String -> String
-shiftSlice n = const "Not yet implemented."
+shiftSlice n = const "Not yet implemented.\n"
 ````
 
-未完(続きは後ほど)
+### コマンド雛形
+
+実行形式のコマンドを作成することになるので，その置き場 app/ を作成する．
+
+```
+mkdir app
+```
+
+実行形式の項を haskell-programming-example.cabal に追加
+
+```
+executable shift-slice
+  hs-source-dirs:      app
+  main-is:             shift-slice.hs
+  ghc-options:         -rtsopts
+  build-depends:       base
+                     , haskell-programming-example
+  default-language:    Haskell2010
+```
+
+app/shift-slice.hs を編集．とりあえず，shiftSlice を呼ぶだけ．
+
+```haskell
+module Main where
+
+import ShiftSlice
+
+main :: IO ()
+main = interact (shiftSlice 3)
+```
+
+### build の確認
+
+これでとりあえず build できるかどうか確認．
+
+```
+stack build
+```
+
+stack build が成功したら，実行ファイルは .stack-work/ 以下のディレクトリに作成される．
+
+```
+echo -n "abcdefg" | .stack-work/dist/x86_64-linux/Cabal-1.22.4.0/build/shift-slice/shift-slice
+Not yet implemented.
+```
+
+これで所定のコマンドを試すための土台はできたかな．
