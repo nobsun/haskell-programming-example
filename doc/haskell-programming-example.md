@@ -35,7 +35,7 @@ stack setup 7.10.2
 
 ### 環境変数の設定
 
-```zsh: .zshenv
+```zsh:.zshenv
 GHC_VERSION=ghc-7.10.2
 GHC_PATH=$HOME/.stack/programs/x86_64-linux/$GHC_VERSION/bin
 export PATH=$HOME/.local/bin:$GHC_PATH:$PATH
