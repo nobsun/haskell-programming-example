@@ -2,6 +2,8 @@
 
 この記事はまだ未完です．Advent Calendar期間中にすこしずつ書きたします．
 
+(12/02 追記：「shiftSlice 最初の実装」「ドキュメント」) 
+
 ## プログラミング環境そのものの準備
 
 ### gitのインストール
@@ -256,3 +258,68 @@ Not yet implemented.
 ```
 
 これで所定のコマンドを試すための土台はできたかな．
+
+### shiftSlice 最初の実装
+
+文字列から文字列への変換ということで以下の4つの変換を合成することを考える．
+
+(1) 文字列からシフト文字列リストへ変換
+(2) 各文字列を先頭n文字までの文字列へ変換
+(3) 長さがnになっている文字列のみ採用した文字列リストへ変換
+(4) 各文字列を改行文字で終端して，それらを連結して1つの文字列に変換
+
+```haskell
+import Data.List (tails)
+
+shiftSlice :: Int -> String -> String
+shiftSlice = unlines . takeWhile ((n ==) . length) . make (take n) . tails
+```
+
+build して実行してみよう．
+
+```
+stack build
+echo -n "abcdefg" | .stack-work/dist/x86_64-linux/Cabal-1.22.4.0/build/shift-slice/shift-slice
+abc
+bcd
+cde
+def
+efg
+```
+
+コマンドの雛形ではスライスの大きさを3に固定して shiftSlice を呼んでいることに注意．
+
+### ドキュメント
+
+Haskellのプログラム用のドキュメントシステム Haddock を使うことを前提に，コメントを付けておこう．
+
+```haskell
+-- |
+-- 文字列をその文字列の各シフトスライスを改行文字で終端して連結した文字列に変換する関数を提供する．
+--
+--     * スライスとは文字列の先頭から指定した長さ分だけ切り出した文字列
+--     * シフトスライスとは文字列を1文字ずつシフトしながら生成したスライス
+
+module ShiftSlice where
+
+import Data.List (tails)
+
+-- | 4つの変換を関数合成する実装
+--
+--       (1) 文字列からシフト文字列リストへ変換
+--       (2) 各文字列を先頭n文字までの文字列へ変換
+--       (3) 長さがnになっている文字列のみ採用した文字列リストへ変換
+--       (4) 各文字列を改行文字で終端して，それらを連結して1つの文字列に変換
+
+shiftSlice :: Int -> String -> String
+shiftSlice n = unlines . takeWhile ((n ==) . length) . map (take n) . tails
+```
+
+ドキュメントはスタックを使って生成する．生成したドキュメントは Web ブラウザで読める．
+
+```
+stack haddock
+google-chrome .stack-work/dist/x86_64-linux/Cabal-1.22.4.0/doc/html/haskell-programming-example/index.html
+```
+
+(to be continued)
