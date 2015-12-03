@@ -24,3 +24,15 @@ executable shift-slice
   build-depends:       base
                      , haskell-programming-example
   default-language:    Haskell2010
+
+test-suite doctest
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test, src
+  main-is:             doctesting.hs
+  build-depends:       base
+                     , haskell-programming-example
+                     , doctest
+  ghc-options:         -rtsopts
+  default-language:    Haskell2010
+
+

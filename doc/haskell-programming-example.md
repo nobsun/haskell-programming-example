@@ -1,8 +1,9 @@
-ここにあるのは，「Haskellプログラミングの例」です．筆者自身がプログラミング環境の使い方をおさらいした様子を示したものです．もっと上手い使い方があるよ．こうした方がいいよ．というのがあれば是非教えてください．
+ここにあるのは，「Haskellプログラミングの例」です．筆者自身が「プログラミング環境の使い方をおさらい」した様子を示したものです．もっと上手い使い方があるよ．こうした方がいいよ．というのがあれば是非教えてください．
 
 この記事はまだ未完です．Advent Calendar期間中にすこしずつ書きたします．
 
-(12/02 追記：「shiftSlice 最初の実装」「ドキュメント」) 
+(12/03 追記：「ユニットテスト」「stack を使ってテストする」)
+(12/02 追記：「shiftSlice 最初の実装」「ドキュメント」)
 
 ## プログラミング環境そのものの準備
 
@@ -320,6 +321,71 @@ shiftSlice n = unlines . takeWhile ((n ==) . length) . map (take n) . tails
 ```
 stack haddock
 google-chrome .stack-work/dist/x86_64-linux/Cabal-1.22.4.0/doc/html/haskell-programming-example/index.html
+```
+
+### ユニットテスト
+
+haddock はユニットテストに対応するための記法をサポートしている．
+
+```haskell
+-- | 4つの変換を関数合成する実装
+--
+--       (1) 文字列からシフト文字列リストへ変換
+--       (2) 各文字列を先頭n文字までの文字列へ変換
+--       (3) 長さがnになっている文字列のみ採用した文字列リストへ変換
+--       (4) 各文字列を改行文字で終端して，それらを連結して1つの文字列に変換
+--
+-- >>> putStr $ shiftSlice 3 "abcdefg"
+-- abc
+-- bcd
+-- cde
+-- def
+-- efg
+
+shiftSlice :: Int -> String -> String
+shiftSlice n = unlines . takeWhile ((n ==) . length) . map (take n) . tails
+```
+
+doctest を使って，``>>>`` の行が計算されて結果がそれ以下の記述と一致するかを確認する．
+
+```
+stack install doctest
+doctest src/ShiftSlice.hs
+```
+
+これで，``Examples: 1  Tried: 1  Errors: 0  Failures: 0`` という表示がでれば OK．
+
+### stack を使ってテストする
+
+まず ``haskell-programming-example.cabal`` ファイルに以下のエントリを追加する．
+
+```
+test-suite doctest
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test, src
+  main-is:             doctesting.hs
+  build-depends:       base
+                     , haskell-programming-example
+                     , doctest
+  ghc-options:         -rtsopts
+  default-language:    Haskell2010
+```
+
+つぎに doctest のテスト実行するプログラム ``test/doctesting.hs`` を作成する．
+
+```haskell
+module Main where
+
+import Test.DocTest
+
+main :: IO ()
+main = doctest ["src/ShiftSlice.hs"]
+```
+
+これで stack を使ってユニットテストができる．
+
+```
+stack test
 ```
 
 (to be continued)
