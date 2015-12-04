@@ -22,6 +22,8 @@ executable shift-slice
   main-is:             shift-slice.hs
   ghc-options:         -rtsopts
   build-depends:       base
+                     , mtl
+                     , optparse-declarative
                      , haskell-programming-example
   default-language:    Haskell2010
 

@@ -2,6 +2,7 @@
 
 この記事はまだ未完です．Advent Calendar期間中にすこしずつ書きたします．
 
+(12/04 追記：「コマンドライン引数」)
 (12/03 追記：「ユニットテスト」「stack を使ってテストする」)
 (12/02 追記：「shiftSlice 最初の実装」「ドキュメント」)
 
@@ -386,6 +387,62 @@ main = doctest ["src/ShiftSlice.hs"]
 
 ```
 stack test
+```
+
+### コマンドライン引数
+
+スライスの大きさをコマンドライン引数で指定できるようにしよう．
+コマンドライン引数の解析には @tanakh さんの [optparse-declative](http://hackage.haskell.org/package/optparse-declarative) が使いやすそう．
+使い方は [optparse-declarative: 宣言的な型レベルコマンドラインパーザー](http://qiita.com/tanakh/items/b6ea4c65d8ed511ac98d) に解説がある．
+
+``haskell-programming-example.cabal`` の ``executable shift-slice``のエントリーを以下のように書き換える．
+
+```
+executable shift-slice
+  hs-source-dirs:      app
+  main-is:             shift-slice.hs
+  ghc-options:         -rtsopts
+  build-depends:       base
+                     , mtl
+                     , optparse-declarative
+                     , haskell-programming-example
+  default-language:    Haskell2010
+```
+
+
+以下のように ``app/shift-slice.hs`` を書き換える．
+
+```haskell
+{-# LANGUAGE DataKinds #-}
+module Main where
+
+import Control.Monad.Trans (liftIO)
+import Options.Declarative
+import ShiftSlice
+
+main :: IO ()
+main = run_ shift_slice
+
+shift_slice :: Flag "n" '["slice-size"] "NUMBER" "size of a slice" (Def "3" Int)
+            -> Cmd "Shift slicing" ()
+shift_slice n = liftIO $ putStr . shiftSlice (get n) =<< getContents
+```
+
+実行例は以下のとおり．
+
+```
+stack build
+echo -n abcdefghijklmn | .stack-work/dist/x86_64-linux/Cabal-1.22.4.0/build/shift-slice/shift-slice --slice-size=5
+abcde
+bcdef
+cdefg
+defgh
+efghi
+fghij
+ghijk
+hijkl
+ijklm
+jklmn
 ```
 
 (to be continued)
